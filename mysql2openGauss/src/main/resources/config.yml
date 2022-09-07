@@ -1,0 +1,15 @@
+#openGauss config
+openGauss_conn:
+  host: "127.0.0.1"
+  port: "5432"
+  user: "opengauss"
+  password: "password123"
+  database: "postgres"
+
+#mysql config
+mysql_conn:
+  host: "127.0.0.1"
+  port: "3306"
+  user: "mysql"
+  password: "password123"
+  database: "mysql"
