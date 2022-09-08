@@ -1,0 +1,30 @@
+og_conn:
+  host: "192.168.0.219"
+  port: "5555"
+  user: "test"
+  password: "Huawei@123"
+  database: "postgres"
+  charset: "utf8"
+  driver: "org.opengauss.Driver"
+  ASSUME_MIN_SERVER_VERSION: "9.4"
+  REPLICATION: "database"
+  PREFER_QUERY_MODE: "simple"
+slot:
+  name: "replication_slot"
+  include-xids: false
+  skip-empty-xacts: true
+  waitLSN: "3/9E44FF58"
+  parallel-decode-num: 20
+  white-table-list: ""
+  standby-connection: false
+  decode-style: "j"
+  decoding: "mppdb_decoding"
+  runnable_num: 1
+mysql:
+  driver: "com.mysql.cj.jdbc.Driver"
+  host: "192.168.0.186"
+  port: "3306"
+  user: "root"
+  password: "123456"
+  database: "zyz_test"
+
