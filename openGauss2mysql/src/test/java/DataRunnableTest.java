@@ -5,7 +5,7 @@ public class DataRunnableTest {
 
     @Test
     public void test(){
-        DataRunnable tesRunnable = new DataRunnable();
+        DataThread tesRunnable = new DataThread();
         OpenGaussLogicData data = new OpenGaussLogicData();
         tesRunnable.addData(data);
         tesRunnable.start();

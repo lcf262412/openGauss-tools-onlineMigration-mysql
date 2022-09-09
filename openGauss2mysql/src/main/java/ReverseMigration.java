@@ -1,3 +1,18 @@
+/*
+ * Copyright (c) 2022-2022 Huawei Technologies Co.,Ltd.
+ *
+ * openGauss is licensed under Mulan PSL v2.
+ * You can use this software according to the terms and conditions of the Mulan PSL v2.
+ * You may obtain a copy of Mulan PSL v2 at:
+ *
+ *           http://license.coscl.org.cn/MulanPSL2
+ *
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+ * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+ * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * See the Mulan PSL v2 for more details.
+ */
+
 import com.alibaba.fastjson.JSONObject;
 import org.opengauss.jdbc.PgConnection;
 import org.opengauss.replication.LogSequenceNumber;
@@ -44,14 +59,18 @@ public class ReverseMigration {
     static String CREATE = "create";
     static String NULL = "null";
     static String NEW_S = "NEW";
-    private static final Map<String, DataRunnable> TABLE_POOL = new ConcurrentHashMap<>();
+    private static final Map<String, DataThread> TABLE_POOL = new ConcurrentHashMap<>();
 
 
     static int SLOT_NUM = 0;
 
     static Map runnable_map = new HashMap<>();
-    ;
 
+    /**
+     * the main functon
+     *
+     * @param args  start/drop/create
+     */
     public static void main(String[] args) {
         try {
             Class.forName(DRIVER);
@@ -68,7 +87,10 @@ public class ReverseMigration {
         }
     }
 
-
+    /**
+     * start Slot
+     *
+     */
     public static void startSlot() throws SQLException, InterruptedException {
         if (LSN_VALUE == "") {
             LSN_VALUE = getSQLResult("select pg_current_xlog_location();").get(0);
@@ -90,7 +112,8 @@ public class ReverseMigration {
 
         TABLE_POOL.clear();
         for (int i = 0; i < LSN_RUNNABLE_NUM; i++) {
-            DataRunnable runnable_i = new DataRunnable();
+            DataThread runnable_i = new DataThread();
+            runnable_i.setUncaughtExceptionHandler((t, e) -> System.out.println(e.getLocalizedMessage()));
             TABLE_POOL.put("RUNNABLE_" + i, runnable_i);
         }
 
@@ -114,7 +137,7 @@ public class ReverseMigration {
 
                 String runnable_name = String.valueOf(runnable_map.get(json_test_Obj.tableName));
                 if (!NULL.equals(runnable_name)) {
-                    DataRunnable runnable = TABLE_POOL.get(runnable_name);
+                    DataThread runnable = TABLE_POOL.get(runnable_name);
                     runnable.addData(json_test_Obj);
                 } else {
                     String[] tableName_arr = json_test_Obj.tableName.split("\\.");
@@ -134,7 +157,7 @@ public class ReverseMigration {
                         }
                     }
                     runnable_map.put(json_test_Obj.tableName, name);
-                    DataRunnable runnable = TABLE_POOL.get(name);
+                    DataThread runnable = TABLE_POOL.get(name);
                     runnable.addData(json_test_Obj);
                     if (NEW_S.equals(String.valueOf(runnable.getState()))) {
                         runnable.start();
@@ -159,7 +182,7 @@ public class ReverseMigration {
         return name;
     }
 
-    public static ArrayList<String> getSQLResult(String sql) {
+    private static ArrayList<String> getSQLResult(String sql) {
         PreparedStatement pstmt = null;
         List<String> create_sql = new ArrayList<String>();
         try {
@@ -178,7 +201,10 @@ public class ReverseMigration {
         return (ArrayList<String>) create_sql;
     }
 
-
+    /**
+     * create Slot
+     *
+     */
     public static void createSlot() throws SQLException {
         conn.getReplicationAPI()
                 .createReplicationSlot()
@@ -188,6 +214,10 @@ public class ReverseMigration {
                 .make();
     }
 
+    /**
+     * drop Slot
+     *
+     */
     public static void dropSlot() throws SQLException {
         conn.getReplicationAPI()
                 .dropReplicationSlot(LSN_NAME);
