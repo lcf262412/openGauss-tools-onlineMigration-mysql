@@ -4,6 +4,12 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.LinkedHashMap;
 
+/**
+ * Description: mysqlconnection class
+ *
+ * @author zhangyaozhong
+ * @date 2022/09/09
+ **/
 public class mysqlconnection {
 
     static String config = "config.yaml";
@@ -16,22 +22,22 @@ public class mysqlconnection {
     static String DATABASE = (String) re_mysql_conn.get("database");
 
     static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";
-    static final String DB_URL = "jdbc:mysql://"+HOST+":"+PORT+"/"+DATABASE+"?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC";
+    static final String DB_URL = "jdbc:mysql://" + HOST + ":" + PORT + "/" + DATABASE + "?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC";
 
 
     public static Statement main() {
         Connection conn = null;
         Statement stmt = null;
-        try{
+        try {
             Class.forName(JDBC_DRIVER);
 
-            conn = DriverManager.getConnection(DB_URL,USER,PASSWORD);
+            conn = DriverManager.getConnection(DB_URL, USER, PASSWORD);
             stmt = conn.createStatement();
 
 
-        }catch(SQLException se){
+        } catch (SQLException se) {
             se.printStackTrace();
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

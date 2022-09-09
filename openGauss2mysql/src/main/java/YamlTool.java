@@ -6,6 +6,12 @@ import java.io.InputStream;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * Description: YamlTool class
+ *
+ * @author zhangyaozhong
+ * @date 2022/09/09
+ **/
 public class YamlTool {
     Map<String, Object> properties;
 
@@ -19,6 +25,7 @@ public class YamlTool {
         Yaml yaml = new Yaml();
         properties = yaml.loadAs(inputStream, Map.class);
     }
+
     public LinkedHashMap getValue(String key) {
         return (LinkedHashMap) properties.get(key);
     }

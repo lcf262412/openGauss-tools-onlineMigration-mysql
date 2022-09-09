@@ -2,6 +2,13 @@ import lombok.Data;
 import lombok.ToString;
 
 import java.util.List;
+
+/**
+ * Description: OpenGaussLogicData class
+ *
+ * @author zhangyaozhong
+ * @date 2022/09/09
+ **/
 @Data
 @ToString
 public class OpenGaussLogicData {

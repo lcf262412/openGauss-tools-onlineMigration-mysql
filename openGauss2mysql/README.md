@@ -39,4 +39,4 @@ openGauss到mysql的在线迁移方案的实现原理如下： 在openGauss端�
 
 #### 迁移性能
 
-- 利用sysbench对mysql进行压测，在10张表30个线程并发情况下，针对insert场景，在Kunpeng-920 2p openEuler机器上测试，整体在线迁移性能可达3w tps。
+- 利用sysbench对mysql进行压测，在100张表100个线程并发情况下，针对insert场景，在蓝区虚拟机上测试，整体在线迁移性能可达1w tps。

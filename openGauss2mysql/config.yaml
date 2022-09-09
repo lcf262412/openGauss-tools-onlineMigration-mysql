@@ -1,8 +1,8 @@
 og_conn:
-  host: "192.168.0.219"
-  port: "5555"
-  user: "test"
-  password: "Huawei@123"
+  host: "openGauss_ip"
+  port: "5432"
+  user: "user"
+  password: "password"
   database: "postgres"
   charset: "utf8"
   driver: "org.opengauss.Driver"
@@ -13,7 +13,7 @@ slot:
   name: "replication_slot"
   include-xids: false
   skip-empty-xacts: true
-  waitLSN: "3/9E44FF58"
+  waitLSN: ""
   parallel-decode-num: 20
   white-table-list: ""
   standby-connection: false
@@ -22,9 +22,9 @@ slot:
   runnable_num: 1
 mysql:
   driver: "com.mysql.cj.jdbc.Driver"
-  host: "192.168.0.186"
+  host: "mysql_ip"
   port: "3306"
-  user: "root"
-  password: "123456"
-  database: "zyz_test"
+  user: "user"
+  password: "password"
+  database: "database"
 

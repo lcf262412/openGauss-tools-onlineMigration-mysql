@@ -11,8 +11,12 @@ import java.util.*;
 import java.util.concurrent.*;
 
 
-
-import static java.lang.System.out;
+/**
+ * Description: ReverseMigration class
+ *
+ * @author zhangyaozhong
+ * @date 2022/09/09
+ **/
 
 public class ReverseMigration {
     static String config = "config.yaml";
@@ -35,21 +39,27 @@ public class ReverseMigration {
 
     static String DATA_NAME = "table_name";
     static String DRIVER = (String) re_og_conn.get("driver");
+    static String START = "start";
+    static String DROP = "drop";
+    static String CREATE = "create";
+    static String NULL = "null";
+    static String NEW_S = "NEW";
     private static final Map<String, DataRunnable> TABLE_POOL = new ConcurrentHashMap<>();
 
 
     static int SLOT_NUM = 0;
 
-    static Map runnable_map = new HashMap<>();;
+    static Map runnable_map = new HashMap<>();
+    ;
 
     public static void main(String[] args) {
         try {
             Class.forName(DRIVER);
-            if(args.length == 0 || args[0].equals("start")){
+            if (args.length == 0 || START.equals(args[0])) {
                 startSlot();
-            }else if(args[0].equals("drop")){
+            } else if (DROP.equals(args[0])) {
                 dropSlot();
-            }else if(args[0].equals("create")){
+            } else if (CREATE.equals(args[0])) {
                 createSlot();
             }
         } catch (Exception e) {
@@ -60,7 +70,7 @@ public class ReverseMigration {
 
 
     public static void startSlot() throws SQLException, InterruptedException {
-        if(LSN_VALUE == ""){
+        if (LSN_VALUE == "") {
             LSN_VALUE = getSQLResult("select pg_current_xlog_location();").get(0);
         }
         LogSequenceNumber waitLSN = LogSequenceNumber.valueOf(LSN_VALUE);
@@ -72,16 +82,16 @@ public class ReverseMigration {
                 .withSlotOption("include-xids", LSN_INCLUDE_XIDS)
                 .withSlotOption("skip-empty-xacts", LSN_SKIP_EMPTY_XACTS)
                 .withStartPosition(waitLSN)
-                .withSlotOption("parallel-decode-num",LSN_PARALLEL_DECODE_NUM)
+                .withSlotOption("parallel-decode-num", LSN_PARALLEL_DECODE_NUM)
                 .withSlotOption("white-table-list", LSN_WHITE_TABLE_LIST)
                 .withSlotOption("standby-connection", LSN_STANDBY_CONNECTION)
                 .withSlotOption("decode-style", LSN_DECODE_STYLE)
                 .start();
 
         TABLE_POOL.clear();
-        for(int i = 0; i<LSN_RUNNABLE_NUM; i++){
+        for (int i = 0; i < LSN_RUNNABLE_NUM; i++) {
             DataRunnable runnable_i = new DataRunnable();
-            TABLE_POOL.put("RUNNABLE_"+i, runnable_i);
+            TABLE_POOL.put("RUNNABLE_" + i, runnable_i);
         }
 
         while (true) {
@@ -103,30 +113,30 @@ public class ReverseMigration {
 
 
                 String runnable_name = String.valueOf(runnable_map.get(json_test_Obj.tableName));
-                if(!runnable_name.equals("null")){
+                if (!NULL.equals(runnable_name)) {
                     DataRunnable runnable = TABLE_POOL.get(runnable_name);
                     runnable.addData(json_test_Obj);
-                }else {
+                } else {
                     String[] tableName_arr = json_test_Obj.tableName.split("\\.");
                     List create_sql_list = getSQLResult("SELECT\n" +
                             "   ccu.table_name AS foreign_table_name\n" +
                             " FROM\n" +
                             "   information_schema.table_constraints AS tc \n" +
                             "   JOIN information_schema.constraint_column_usage AS ccu ON ccu.constraint_name = tc.constraint_name\n" +
-                            " WHERE constraint_type = 'FOREIGN KEY' AND tc.table_name = '"+tableName_arr[1]+"';");
+                            " WHERE constraint_type = 'FOREIGN KEY' AND tc.table_name = '" + tableName_arr[1] + "';");
 
                     String name = getRunnable();
-                    if(!create_sql_list.isEmpty()){
-                        for (int i =0; i<create_sql_list.size();i++){
-                            String runnable_name_forigen = tableName_arr[0]+"."+create_sql_list.get(i);
+                    if (!create_sql_list.isEmpty()) {
+                        for (int i = 0; i < create_sql_list.size(); i++) {
+                            String runnable_name_forigen = tableName_arr[0] + "." + create_sql_list.get(i);
 
-                            runnable_map.put(runnable_name_forigen,name);
+                            runnable_map.put(runnable_name_forigen, name);
                         }
                     }
-                    runnable_map.put(json_test_Obj.tableName,name);
+                    runnable_map.put(json_test_Obj.tableName, name);
                     DataRunnable runnable = TABLE_POOL.get(name);
                     runnable.addData(json_test_Obj);
-                    if(String.valueOf(runnable.getState()).equals("NEW")){
+                    if (NEW_S.equals(String.valueOf(runnable.getState()))) {
                         runnable.start();
                     }
                 }
@@ -137,25 +147,26 @@ public class ReverseMigration {
     }
 
 
-    public  static String getRunnable(){
+    private static String getRunnable() {
         String name = "";
-        if(SLOT_NUM < LSN_RUNNABLE_NUM){
-            name = "RUNNABLE_"+SLOT_NUM;
+        if (SLOT_NUM < LSN_RUNNABLE_NUM) {
+            name = "RUNNABLE_" + SLOT_NUM;
             SLOT_NUM++;
-        }else {
+        } else {
             SLOT_NUM = 0;
-            name = "RUNNABLE_"+SLOT_NUM;
+            name = "RUNNABLE_" + SLOT_NUM;
         }
-        return  name;
+        return name;
     }
-    public static ArrayList<String> getSQLResult(String sql){
+
+    public static ArrayList<String> getSQLResult(String sql) {
         PreparedStatement pstmt = null;
         List<String> create_sql = new ArrayList<String>();
         try {
             pstmt = jdbc_conn
                     .prepareStatement(sql);
             ResultSet rs = pstmt.executeQuery();
-            while (rs.next()){
+            while (rs.next()) {
                 create_sql.add(rs.getString(1));
             }
             rs.close();

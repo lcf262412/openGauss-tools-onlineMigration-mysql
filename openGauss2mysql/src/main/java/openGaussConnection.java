@@ -5,7 +5,12 @@ import java.sql.DriverManager;
 import java.util.LinkedHashMap;
 import java.util.Properties;
 
-
+/**
+ * Description: openGaussConnection class
+ *
+ * @author zhangyaozhong
+ * @date 2022/09/09
+ **/
 public class openGaussConnection {
     static String config = "config.yaml";
     static YamlTool yamls = new YamlTool(config);
@@ -21,7 +26,7 @@ public class openGaussConnection {
 
 
     public static PgConnection main() {
-        String sourceURL = "jdbc:opengauss://"+HOST+":"+PORT+"/"+DATABASE;
+        String sourceURL = "jdbc:opengauss://" + HOST + ":" + PORT + "/" + DATABASE;
         PgConnection conn = null;
         try {
 
@@ -34,7 +39,7 @@ public class openGaussConnection {
             conn = (PgConnection) DriverManager.getConnection(sourceURL, properties);
             conn.execSQLQuery("show session_timeout;");
             System.out.println("openGauss connection success!");
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
