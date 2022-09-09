@@ -69,7 +69,7 @@ public class ReverseMigration {
     /**
      * the main functon
      *
-     * @param args  start/drop/create
+     * @param args start/drop/create
      */
     public static void main(String[] args) {
         try {
@@ -89,7 +89,6 @@ public class ReverseMigration {
 
     /**
      * start Slot
-     *
      */
     public static void startSlot() throws SQLException, InterruptedException {
         if (LSN_VALUE == "") {
@@ -113,7 +112,6 @@ public class ReverseMigration {
         TABLE_POOL.clear();
         for (int i = 0; i < LSN_RUNNABLE_NUM; i++) {
             DataThread runnable_i = new DataThread();
-            runnable_i.setUncaughtExceptionHandler((t, e) -> System.out.println(e.getLocalizedMessage()));
             TABLE_POOL.put("RUNNABLE_" + i, runnable_i);
         }
 
@@ -183,17 +181,12 @@ public class ReverseMigration {
     }
 
     private static ArrayList<String> getSQLResult(String sql) {
-        PreparedStatement pstmt = null;
         List<String> create_sql = new ArrayList<String>();
-        try {
-            pstmt = jdbc_conn
-                    .prepareStatement(sql);
-            ResultSet rs = pstmt.executeQuery();
+        try (PreparedStatement pstmt = jdbc_conn.prepareStatement(sql); ResultSet rs = pstmt.executeQuery()) {
             while (rs.next()) {
                 create_sql.add(rs.getString(1));
             }
-            rs.close();
-            pstmt.close();
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -203,7 +196,6 @@ public class ReverseMigration {
 
     /**
      * create Slot
-     *
      */
     public static void createSlot() throws SQLException {
         conn.getReplicationAPI()
@@ -216,7 +208,6 @@ public class ReverseMigration {
 
     /**
      * drop Slot
-     *
      */
     public static void dropSlot() throws SQLException {
         conn.getReplicationAPI()

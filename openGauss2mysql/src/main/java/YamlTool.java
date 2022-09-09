@@ -31,9 +31,9 @@ public class YamlTool {
     Map<String, Object> properties;
 
     /**
-     *  deal with yaml
+     * deal with yaml
      *
-     * @param filePath  the path of conf file
+     * @param filePath the path of conf file
      */
     public YamlTool(String filePath) {
         InputStream inputStream = null;

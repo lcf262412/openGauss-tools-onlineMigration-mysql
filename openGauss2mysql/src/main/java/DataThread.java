@@ -37,19 +37,17 @@ public class DataThread extends Thread {
 
     /**
      * run Thread
-     *
      */
     @Override
     public void run() {
-        Statement stmt = mysqlconnection.main();
         OpenGaussLogicData logicData = null;
-        while (true) {
-            try {
+        try (Statement stmt = mysqlconnection.main()) {
+            while (true) {
                 logicData = queue.take();
                 stmt.execute(insertMysql(logicData));
-            } catch (SQLException | InterruptedException e) {
-                throw new RuntimeException(e);
             }
+        } catch (SQLException | InterruptedException e) {
+            throw new RuntimeException(e);
         }
 
     }

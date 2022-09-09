@@ -41,7 +41,6 @@ public class mysqlconnection {
 
     /**
      * connect mysql and return Statement
-     *
      */
     public static Statement main() {
         Connection conn = null;

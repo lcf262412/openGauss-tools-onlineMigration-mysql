@@ -41,7 +41,6 @@ public class openGaussConnection {
 
     /**
      * connect openGauss and return conn
-     *
      */
     public static PgConnection main() {
         String sourceURL = "jdbc:opengauss://" + HOST + ":" + PORT + "/" + DATABASE;
@@ -60,7 +59,6 @@ public class openGaussConnection {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
 
         return conn;
     }
