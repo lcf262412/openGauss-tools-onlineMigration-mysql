@@ -1,0 +1,30 @@
+og_conn:
+  host: "openGauss_ip"
+  port: "5432"
+  user: "user"
+  password: "password"
+  database: "postgres"
+  charset: "utf8"
+  driver: "org.opengauss.Driver"
+  ASSUME_MIN_SERVER_VERSION: "9.4"
+  REPLICATION: "database"
+  PREFER_QUERY_MODE: "simple"
+slot:
+  name: "replication_slot"
+  include-xids: false
+  skip-empty-xacts: true
+  waitLSN: ""
+  parallel-decode-num: 20
+  white-table-list: ""
+  standby-connection: false
+  decode-style: "j"
+  decoding: "mppdb_decoding"
+  runnable_num: 1
+mysql:
+  driver: "com.mysql.cj.jdbc.Driver"
+  host: "mysql_ip"
+  port: "3306"
+  user: "user"
+  password: "password"
+  database: "database"
+
