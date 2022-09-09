@@ -59,7 +59,6 @@ public class openGaussConnection {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return conn;
     }
 }
