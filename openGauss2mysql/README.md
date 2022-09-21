@@ -6,8 +6,9 @@ openGauss到mysql的在线迁移方案的实现原理如下： 在openGauss端�
 #### 约束条件
 
 - 仅支持从openGauss迁移至mysql，支持DML迁移，不支持DDL迁移
-- MySQL5.7及以上版本，openGauss支持逻辑复制
+- MySQL5.7版本，openGauss支持逻辑复制
 - 迁移前需要开启数据库的逻辑复制相关配置：wal_level = logical，无主键的表需要执行：alter table tablename replica identity full；
+- 反向迁移依赖于openGauss的逻辑复制功能，相关约束参见：https://www.opengauss.org/zh/docs/2.1.0/docs/Developerguide/%E9%80%BB%E8%BE%91%E8%A7%A3%E7%A0%81%E6%A6%82%E8%BF%B0.html
 
 #### 使用教程
 
@@ -34,9 +35,9 @@ openGauss到mysql的在线迁移方案的实现原理如下： 在openGauss端�
   Kunpeng-920 2p openEuler机器上
 
   ```
-  numactl -C 0-31 -m 0 java -Xms15G -Xmx25G -jar ./target/reverse-migration-mysql-1.0-SNAPSHOT.jar
+  numactl -C 0-31 -m 0 java -Xms15G -Xmx25G -jar ./target/reverse-migration-mysql-1.0-SNAPSHOT.jar start/create/drop
   ```
 
 #### 迁移性能
 
-- 利用sysbench对mysql进行压测，在100张表100个线程并发情况下，针对insert场景，在蓝区虚拟机上测试，整体在线迁移性能可达1w tps。
+- 利用sysbench对openGauss进行压测，在100张表100个线程并发情况下，针对insert场景，在Kunpeng-920 2P机器上测试，在线迁移性能可达3W tps。

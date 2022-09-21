@@ -80,6 +80,8 @@ public class ReverseMigration {
                 dropSlot();
             } else if (CREATE.equals(args[0])) {
                 createSlot();
+            }else {
+                System.out.println("wrong parameter:"+args[0]);
             }
         } catch (Exception e) {
             e.printStackTrace();
