@@ -20,7 +20,7 @@ Mysql到openGauss的在线迁移方案的实现原理如下： 基于开源三�
 - 修改配置文件，配置文件的路径为：
 
   ```
-  openGauss-tools-onlineMigration-mysql/mysql2openGauss/src/main/resources/config.yml
+  openGauss-tools-onlineMigration-mysql/mysql2openGauss/config.yml
   ```
 
 - 编译命令

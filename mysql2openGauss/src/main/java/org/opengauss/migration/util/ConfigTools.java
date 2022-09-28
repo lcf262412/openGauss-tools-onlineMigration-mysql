@@ -33,7 +33,7 @@ public class ConfigTools {
     /**
      * Config path
      */
-    public static final String CONFIG_PATH = "src/main/resources/config.yml";
+    public static final String CONFIG_PATH = "config.yml";
 
     /**
      * OpenGauss connection

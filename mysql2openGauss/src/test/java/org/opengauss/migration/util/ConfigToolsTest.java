@@ -28,7 +28,7 @@ import java.io.FileNotFoundException;
 public class ConfigToolsTest {
     @Test
     public void test() {
-        Assert.assertEquals("src/main/resources/config.yml", ConfigTools.CONFIG_PATH);
+        Assert.assertEquals("config.yml", ConfigTools.CONFIG_PATH);
         Assert.assertEquals("openGauss_conn", ConfigTools.OPENGAUSS_CONN);
         Assert.assertEquals("mysql_conn", ConfigTools.MYSQL_CONN);
         try {
