@@ -27,4 +27,3 @@ mysql:
   user: "user"
   password: "password"
   database: "database"
-

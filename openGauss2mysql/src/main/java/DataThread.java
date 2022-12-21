@@ -21,6 +21,7 @@ import java.sql.Statement;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.math.BigInteger;
 
 /**
  * Description: DataRunnable class
@@ -58,6 +59,15 @@ public class DataThread extends Thread {
      * @param sql openGauss's sql object
      */
     public void addData(OpenGaussLogicData sql) {
+        List<String> typeList = sql.getColumnsType();
+        List<String> valueList = sql.getColumnsVal();
+        for (int i = 0; i < typeList.size(); i++) {
+            if ("blob".equals(typeList.get(i)) && !"null".equals(valueList.get(i))){
+                String oldValue = valueList.get(i).substring(1, valueList.get(i).length() - 1);
+                BigInteger value = new BigInteger(oldValue, 16);
+                valueList.set(i, "\'" + value.toString() + "\'");
+            }
+        }
         queue.add(sql);
     }
 
