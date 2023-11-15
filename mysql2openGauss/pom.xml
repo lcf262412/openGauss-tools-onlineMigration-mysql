@@ -14,7 +14,7 @@
         <mysql.binlog.version>0.25.4</mysql.binlog.version>
         <mysql.connector.version>5.1.41</mysql.connector.version>
         <opengauss.connector.version>2.0.1-compatibility</opengauss.connector.version>
-        <yaml.version>1.13</yaml.version>
+        <yaml.version>1.31</yaml.version>
         <junit.version>4.13.2</junit.version>
     </properties>
 
